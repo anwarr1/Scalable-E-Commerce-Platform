@@ -2,23 +2,34 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <annotationProcessing>
-      <profile name="Annotation profile for user-ms" enabled="true">
+      <profile default="true" name="Default" enabled="true" />
+      <profile name="Annotation profile for shopping-cart-ms" enabled="true">
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <processorPath useClasspath="false">
-          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/1.18.36/lombok-1.18.36.jar" />
         </processorPath>
-        <module name="payment-ms" />
-        <module name="order-ms" />
+        <module name="product-catalog-ms" />
         <module name="user-ms" />
+        <module name="registry-server" />
+        <module name="order-ms" />
+        <module name="gateway-ms" />
+        <module name="payment-ms" />
+        <module name="notification-ms" />
+        <module name="shopping-cart-ms" />
       </profile>
     </annotationProcessing>
   </component>
   <component name="JavacSettings">
     <option name="ADDITIONAL_OPTIONS_OVERRIDE">
+      <module name="gateway-ms" options="-parameters" />
+      <module name="notification-ms" options="-parameters" />
       <module name="order-ms" options="-parameters" />
       <module name="payment-ms" options="-parameters" />
+      <module name="product-catalog-ms" options="-parameters" />
+      <module name="registry-server" options="-parameters" />
+      <module name="shopping-cart-ms" options="-parameters" />
       <module name="user-ms" options="-parameters" />
     </option>
   </component>

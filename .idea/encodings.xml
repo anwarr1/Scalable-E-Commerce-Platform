@@ -1,8 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="Encoding">
+    <file url="file://$PROJECT_DIR$/Ecom-Backend/gateway-ms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Ecom-Backend/notification-ms/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Ecom-Backend/order-ms/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Ecom-Backend/payment-ms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Ecom-Backend/product-catalog-ms/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Ecom-Backend/registry-server/src/main/java" charset="UTF-8" />
+    <file url="file://$PROJECT_DIR$/Ecom-Backend/shopping-cart-ms/src/main/java" charset="UTF-8" />
     <file url="file://$PROJECT_DIR$/Ecom-Backend/user-ms/src/main/java" charset="UTF-8" />
   </component>
 </project>

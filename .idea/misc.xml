@@ -8,6 +8,10 @@
         <option value="$PROJECT_DIR$/Ecom-Backend/order-ms/pom.xml" />
         <option value="$PROJECT_DIR$/Ecom-Backend/payment-ms/pom.xml" />
         <option value="$PROJECT_DIR$/Ecom-Backend/notification-ms/pom.xml" />
+        <option value="$PROJECT_DIR$/Ecom-Backend/registry-server/pom.xml" />
+        <option value="$PROJECT_DIR$/Ecom-Backend/product-catalog-ms/pom.xml" />
+        <option value="$PROJECT_DIR$/Ecom-Backend/shopping-cart-ms/pom.xml" />
+        <option value="$PROJECT_DIR$/Ecom-Backend/gateway-ms/pom.xml" />
       </list>
     </option>
     <option name="workspaceImportForciblyTurnedOn" value="true" />
