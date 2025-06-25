@@ -1,6 +1,5 @@
 package org.example.shoppingcartms.controller;
 
-import io.jsonwebtoken.Claims;
 import lombok.AllArgsConstructor;
 import org.example.shoppingcartms.model.entity.UserCart;
 import org.example.shoppingcartms.request.CreateOrderRequest;
@@ -8,20 +7,26 @@ import org.example.shoppingcartms.request.UserCartRequest;
 import org.example.shoppingcartms.service.UserCartService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.NoSuchElementException;
 
 @RestController
 @AllArgsConstructor
-@RequestMapping("/api/cart")
+@RequestMapping("cart")
 public class UserCartController {
     private final UserCartService userCartService;
 
     @PostMapping("/add")
-    public void addToCart(@RequestBody UserCartRequest userCartRequest) {
-        userCartService.addToCart(userCartRequest.getUserId(), userCartRequest.getProductId());
+    public UserCart addToCart(@RequestBody UserCartRequest userCartRequest) {
+        return userCartService.addToCart(userCartRequest.getUserId(), userCartRequest.getProductId());
+
+    }
+
+    @PostMapping("/addMultiple")
+    public UserCart addToCartAtOnce(@RequestBody UserCartRequest userCartRequest) {
+        return userCartService.addToCartAtOnce(userCartRequest.getUserId(), userCartRequest.getProductId(),
+                userCartRequest.getQuantity());
 
     }
 

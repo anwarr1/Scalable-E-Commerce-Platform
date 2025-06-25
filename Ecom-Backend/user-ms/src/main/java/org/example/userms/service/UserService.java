@@ -19,17 +19,31 @@ public class UserService {
     private final UserRepository userRepository;
 
     public String Register(RegisterRequest registerRequest) {
-        if (userRepository.findByEmail(registerRequest.getEmail()) != null)
+
+        // Check if the user already exists
+        if (userRepository.findByEmail(registerRequest.getEmail()) != null) {
             throw new RuntimeException("User already exists");
+        }
+
+        // Build the user object
         User user = User.builder()
                 .username(registerRequest.getName())
                 .email(registerRequest.getEmail())
                 .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .role("USER")
                 .build();
-        userRepository.save(user);
-        return jwtService.generateToken(registerRequest.getEmail());
 
+        // Save the user and handle potential exceptions
+        try {
+            userRepository.save(user);
+            System.out.println("User saved successfully: " + user);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error occurred while saving the user", e);
+        }
+
+        // Generate and return the JWT token
+        return jwtService.generateToken(registerRequest.getEmail());
     }
 
     public String Login(LoginRequest loginRequest) {

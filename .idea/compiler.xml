@@ -14,10 +14,18 @@
         <module name="user-ms" />
         <module name="registry-server" />
         <module name="order-ms" />
-        <module name="gateway-ms" />
         <module name="payment-ms" />
         <module name="notification-ms" />
         <module name="shopping-cart-ms" />
+      </profile>
+      <profile name="Annotation profile for gateway-ms" enabled="true">
+        <sourceOutputDir name="target/generated-sources/annotations" />
+        <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
+        <outputRelativeToContentRoot value="true" />
+        <processorPath useClasspath="false">
+          <entry name="$MAVEN_REPOSITORY$/org/projectlombok/lombok/unknown/lombok-unknown.jar" />
+        </processorPath>
+        <module name="gateway-ms" />
       </profile>
     </annotationProcessing>
   </component>

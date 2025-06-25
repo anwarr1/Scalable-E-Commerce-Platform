@@ -1,0 +1,97 @@
+version: '3.8'
+
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+      MYSQL_ROOT_PASSWORD: springstudent
+      MYSQL_DATABASE: ecom
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pspringstudent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  registry-server:
+    build:
+      context: ./registry-server
+    container_name: registry-server
+    ports:
+      - "8761:8761"
+
+
+  gateway-ms:
+    build:
+      context: ./gateway-ms
+    container_name: gateway-ms
+    ports:
+      - "8085:8085"
+    depends_on:
+      - registry-server
+
+
+  notification-ms:
+    build:
+      context: ./notification-ms
+    container_name: notification-ms
+    ports:
+      - "8081:8081"
+    depends_on:
+      registry-server:
+        condition: service_started
+      mysql:
+        condition: service_healthy  # Wait for MySQL to be healthy
+    restart: on-failure
+
+
+  order-ms:
+    build:
+      context: ./order-ms
+    container_name: order-ms
+    ports:
+      - "8083:8083"
+    depends_on:
+      registry-server:
+        condition: service_started
+      mysql:
+        condition: service_healthy  # Wait for MySQL to be healthy
+    restart: on-failure
+
+  shopping-cart-ms:
+    build:
+      context: ./shopping-cart-ms
+    container_name: shopping-cart-ms
+    ports:
+      - "8087:8087"
+    depends_on:
+      registry-server:
+        condition: service_started
+      mysql:
+        condition: service_healthy  # Wait for MySQL to be healthy
+    restart: on-failure
+
+  user-ms:
+    build:
+      context: ./user-ms
+    container_name: user-ms
+    ports:
+      - "8088:8088"
+    depends_on:
+      registry-server:
+        condition: service_started
+      mysql:
+        condition: service_healthy  # Wait for MySQL to be healthy
+    restart: on-failure
+
+volumes:
+  mysql_data:

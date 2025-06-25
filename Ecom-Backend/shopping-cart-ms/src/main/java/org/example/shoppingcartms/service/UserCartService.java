@@ -43,50 +43,103 @@ public class UserCartService {
     }
 
     @Transactional
-    public void addToCart(Long userId, Long productId) {
-        double total = 0.0;
-
-        // Find userCart by userId, not id
-        UserCart userCart = userCartRepository.findByUserId(userId)
-                .orElseGet(() -> {
-                    UserCart cart = new UserCart();
-                    cart.setUserId(userId);
-                    cart.setCartItemList(new ArrayList<>());
-                    cart.setTotalPrice(0.0);
-                    return cart;
-                });
-
-        List<CartItem> cartItemList = userCart.getCartItemList();
-        boolean isProductInCart = false;
-
-        for (CartItem cartItem : cartItemList) {
-            if (cartItem.getProductId().equals(productId)) {
-                cartItem.setQuantity(cartItem.getQuantity() + 1);
-                isProductInCart = true;
-                break;
+    public UserCart addToCart(Long userId, Long productId) {
+        try {
+            // Validate userId and productId
+            if (userId == null || productId == null) {
+                throw new IllegalArgumentException("User ID and Product ID must not be null");
             }
+
+            double total = 0.0;
+
+            // Find userCart by userId, not id
+            UserCart userCart = userCartRepository.findByUserId(userId)
+                    .orElseGet(() -> {
+                        UserCart cart = new UserCart();
+                        cart.setUserId(userId);
+                        cart.setCartItemList(new ArrayList<>());
+                        cart.setTotalPrice(0.0);
+                        return cart;
+                    });
+
+            List<CartItem> cartItemList = userCart.getCartItemList();
+            boolean isProductInCart = false;
+
+            for (CartItem cartItem : cartItemList) {
+                if (cartItem.getProductId().equals(productId)) {
+                    cartItem.setQuantity(cartItem.getQuantity() + 1);
+                    isProductInCart = true;
+                    break;
+                }
+            }
+
+            if (!isProductInCart) {
+                CartItem cartItem = new CartItem();
+                cartItem.setProductId(productId);
+                cartItem.setQuantity(1);
+
+                double productPrice = fetchProductPrice(productId); // You have to implement this
+                cartItem.setPrice(productPrice);
+
+                cartItemList.add(cartItem);
+            }
+
+            // Recalculate total price
+            for (CartItem cartItem : cartItemList) {
+                total += cartItem.getQuantity() * cartItem.getPrice();
+            }
+            userCart.setTotalPrice(total);
+
+            userCart.setCartItemList(cartItemList);
+
+            userCartRepository.save(userCart);
+            return userCart;
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException("Invalid input: " + e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException("Error while adding to cart: " + e.getMessage(), e);
         }
+    }
 
-        if (!isProductInCart) {
-            CartItem cartItem = new CartItem();
-            cartItem.setProductId(productId);
-            cartItem.setQuantity(1);
+    @Transactional
+    public UserCart addToCartAtOnce(Long userId, Long productId, int quantity) {
+        try {
+            UserCart userCart = userCartRepository.findByUserId(userId)
+                    .orElseGet(() -> {
+                        UserCart cart = new UserCart();
+                        cart.setUserId(userId);
+                        cart.setCartItemList(new ArrayList<>());
+                        cart.setTotalPrice(0.0);
+                        return cart;
+                    });
 
-            double productPrice = fetchProductPrice(productId); // You have to implement this
-            cartItem.setPrice(productPrice);
+            boolean itemExists = false;
 
-            cartItemList.add(cartItem);
+            for (CartItem cartItem : userCart.getCartItemList()) {
+                if (cartItem.getProductId().equals(productId)) {
+                    cartItem.setQuantity(cartItem.getQuantity() + quantity);
+                    userCart.setTotalPrice(userCart.getTotalPrice() + (cartItem.getPrice() * quantity));
+                    itemExists = true;
+                    break;
+                }
+            }
+
+            if (!itemExists) {
+                CartItem newCartItem = new CartItem();
+                newCartItem.setProductId(productId);
+                newCartItem.setQuantity(quantity);
+                double productPrice = fetchProductPrice(productId); // Assumed correct
+                newCartItem.setPrice(productPrice);
+                userCart.getCartItemList().add(newCartItem);
+                userCart.setTotalPrice(userCart.getTotalPrice() + (productPrice * quantity));
+            }
+
+            // ✅ Save the updated or new userCart
+            return userCartRepository.save(userCart);
+
+        } catch (Exception e) {
+            throw new RuntimeException("Error while adding to cart: " + e.getMessage(), e);
         }
-
-        // Recalculate total price
-        for (CartItem cartItem : cartItemList) {
-            total += cartItem.getQuantity() * cartItem.getPrice();
-        }
-        userCart.setTotalPrice(total);
-
-        userCart.setCartItemList(cartItemList);
-
-        userCartRepository.save(userCart);
     }
 
     // Dummy method for now, you have to later call Product microservice
@@ -120,6 +173,13 @@ public class UserCartService {
     public UserCart viewCart(Long userId) {
         return userCartRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("User cart not found"));
+
+    }
+
+    public List<CartItem> listCart(Long userId) {
+        UserCart userCart = userCartRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User cart not found"));
+        return userCart.getCartItemList();
 
     }
 

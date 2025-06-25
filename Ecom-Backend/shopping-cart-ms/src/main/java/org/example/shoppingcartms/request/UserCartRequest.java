@@ -10,4 +10,5 @@ import lombok.NoArgsConstructor;
 public class UserCartRequest {
     Long userId;
     Long productId;
+    int quantity;
 }

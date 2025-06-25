@@ -1,12 +1,12 @@
 server:
-  port: 8099 # Change port for each service
+  port: 8087 # Change port for each service
 
 spring:
   application:
     name: shopping-cart-service
 
   datasource:
-    url: jdbc:mysql://localhost:3306/ecom
+    url: jdbc:mysql://localhost:3307/ecom
     username: springstudent
     password: springstudent
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -23,5 +23,7 @@ eureka:
       defaultZone: http://localhost:8761/eureka
     register-with-eureka: true
     fetch-registry: true
+  instance:
+    prefer-ip-address: true
 jwt:
   secret: mysupersecretkey12345678901234567890
