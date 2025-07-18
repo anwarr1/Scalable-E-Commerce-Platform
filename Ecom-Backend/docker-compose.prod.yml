@@ -1,0 +1,79 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_USER: springstudent
+      MYSQL_PASSWORD: springstudent
+      MYSQL_ROOT_PASSWORD: springstudent
+      MYSQL_DATABASE: ecom
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: [ "CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pspringstudent" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  registry-server:
+    image: anwarswe/registry-server:latest
+    container_name: registry-server
+    ports:
+      - "8761:8761"
+
+  gateway-ms:
+    image: anwarswe/gateway-ms:latest
+    container_name: gateway-ms
+    ports:
+      - "8085:8085"
+    depends_on:
+      - registry-server
+
+
+  order-ms:
+    image: anwarswe/order-ms:latest
+    container_name: order-ms
+    ports:
+      - "8083:8083"
+    depends_on:
+      - registry-server
+      - mysql
+    restart: on-failure
+
+  shopping-cart-ms:
+    image: anwarswe/shopping-cart-ms:latest
+    container_name: shopping-cart-ms
+    ports:
+      - "8087:8087"
+    depends_on:
+      - registry-server
+      - mysql
+    restart: on-failure
+
+  user-ms:
+    image: anwarswe/user-ms:latest
+    container_name: user-ms
+    ports:
+      - "8088:8088"
+    depends_on:
+      - registry-server
+      - mysql
+    restart: on-failure
+  user-ms:
+    image: anwarswe/product-catalog-ms
+    container_name: product-catalog-ms
+    ports:
+      - "9090:9090"
+    depends_on:
+      - registry-server
+      - mysql
+    restart: on-failure
+
+volumes:
+  mysql_data:
