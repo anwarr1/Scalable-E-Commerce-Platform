@@ -65,7 +65,7 @@ services:
       - registry-server
       - mysql
     restart: on-failure
-  user-ms:
+  product-catalog-ms:
     image: anwarswe/product-catalog-ms
     container_name: product-catalog-ms
     ports:
