@@ -31,7 +31,7 @@ services:
     image: anwarswe/gateway-ms:latest
     container_name: gateway-ms
     ports:
-      - "8085:8085"
+      - "8888:8085"
     depends_on:
       - registry-server
 
