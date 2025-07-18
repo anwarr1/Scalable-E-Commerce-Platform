@@ -163,9 +163,9 @@ pipeline {
             steps {
                 dir('Ecom-Backend/') {
                     sh '''
-                        docker compose down
-                        docker compose pull
-                        docker compose up -d
+                        docker compose -f docker-compose.prod.yml down
+                        docker compose -f docker-compose.prod.yml pull
+                        docker compose -f docker-compose.prod.yml up -d
                     '''
                 }
             }
